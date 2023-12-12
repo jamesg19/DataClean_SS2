@@ -47,9 +47,9 @@ class Logica:
         print(data_local.shape[0])
         print(data_local.head())
         print("######################\n")
-        list_fechas=self.get_lista_fechas_local(data_local)
+        data_local=self.get_lista_fechas_local(data_local)
 
-        data_local=self.verificar_columna_con_fecha(data_local)
+
         print(data_local.shape[0])
         print(data_local.head())
 
@@ -57,7 +57,6 @@ class Logica:
     def get_lista_fechas_local(self,df):
         # Obtiene solo los nombres de las columnas
         nombres_columnas = df.columns[5:].tolist()
-        print(nombres_columnas)
 
         # Filtra las fechas válidas
         fechas_validas = []
@@ -79,14 +78,8 @@ class Logica:
             print(fecha)
 
 
-        return nombres_columnas
-
-    def verificar_columna_con_fecha(self,df):
-        # Convertir la columna de fecha en un objeto de fecha y hora de pandas
-        dff=df.iloc[:, 5:] = df.iloc[:, 5:].apply(pd.to_datetime, format='%d/%m/%Y', errors='coerce')
-        # Eliminar las columnas que no cumplen con el formato
-        dff.dropna(subset=dff.columns[5:], how='all', inplace=True)
         return df
+
 
 
     # Elimina los datos que no tengan fecha
