@@ -82,21 +82,18 @@ class Logica:
         return nombres_columnas
 
     def verificar_columna_con_fecha(self,df):
-
         # Convertir la columna de fecha en un objeto de fecha y hora de pandas
         dff=df.iloc[:, 5:] = df.iloc[:, 5:].apply(pd.to_datetime, format='%d/%m/%Y', errors='coerce')
-
         # Eliminar las columnas que no cumplen con el formato
         dff.dropna(subset=dff.columns[5:], how='all', inplace=True)
-
         return df
 
 
     # Elimina los datos que no tengan fecha
     def limpiar_data_global_date_reported(self,data,column):
-
         datos = data.dropna(subset=[column])
         return datos
+
 
     # Retorna una lista de objetos
     def convertir_global_a_object(self, datos_filtrados):
@@ -109,6 +106,7 @@ class Logica:
                 cumulative_deaths=fila['Cumulative_deaths'])
             informe_global.append(informe)
         return informe_global
+
 
     def verificar_entero(self, datos,column):
         # Convertir la columna 'New_cases' a numérico y eliminar filas con valores no numéricos
