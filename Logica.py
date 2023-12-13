@@ -12,11 +12,11 @@ class Logica:
     def analizar(self):
         url = "https://seminario2.blob.core.windows.net/fase1/global.csv?sp=r&st=2023-12-06T03:45:26Z&se=2024-01-04T11:45:26Z&sv=2022-11-02&sr=b&sig=xdx7LdUOekGyBvGL%2FNE55ZZj9SBvCC%2FWegxtpSsKjJg%3D"
         pais = "Guatemala"
-        year=2021
+        year=2020
         cantidad_bloque=50
 
         #self.procesar_arhcivo_global("global.csv",pais,year)
-        self.procesar_arhcivo_local()
+        self.procesar_arhcivo_local(year)
     def procesar_arhcivo_global(self,url,pais,year):
         file = File(url)
         datos = file.download_csv()
@@ -42,7 +42,7 @@ class Logica:
             informe.mostrar_informacion()
 
     #MANEJA LA LOGICA DEL ARCHIVO LOCAL
-    def procesar_arhcivo_local(self):
+    def procesar_arhcivo_local(self,year):
         file = File("municipio.csv")
         data_local=file.download_csv()
         #print("#################")
@@ -51,6 +51,8 @@ class Logica:
         #print(data_local.head())
         #print("######################\n")
         data_local,columnas_validas_fecha=self.get_lista_fechas_local(data_local)
+
+        data_local=self.filtrar_columnas_por_fecha(data_local,year,columnas_validas_fecha)
 
         data_local=self.verificar_entero_archivo_local(data_local,columnas_validas_fecha)
 
@@ -68,7 +70,8 @@ class Logica:
         print(data_local)
         lst=self.convertir_local_a_object(data_local)
         for item in lst:
-            item.mostrar_informacion()
+            #item.mostrar_informacion()
+            pass
 
         os.remove("municipio_limpio.csv")
         data_local.to_csv("municipio_limpio.csv",index=False)
@@ -105,8 +108,30 @@ class Logica:
 
         return df,columnas_validas
 
+    def filtrar_columnas_por_fecha(self,df,year,columnas_validas_fecha):
+
+        # Convierte las columnas de fechas a objetos datetime para comparar con el año 2020
+        # Convierte las fechas de strings a objetos datetime con el formato deseado
+        lista=[]
+        for item in columnas_validas_fecha:
+
+            fecha_parseada = pd.to_datetime(item, format='%m/%d/%Y')
+            lista.append([fecha_parseada,item])
+
+        # Filtra las columnas que corresponden al año X
+        #columnas_fechas_filtradas = [str(fecha) for fecha in fechas_parseadas if fecha.year == year]
+
+        for fechas_item in lista:
+
+           if not fechas_item[0].year == year:
+
+               print(fechas_item[1])
+               df = df.drop(fechas_item[1], axis=1)
+
+        return df
 
 
+        #return df_filtrado
     # Elimina los datos que no tengan fecha
     def limpiar_data_global_date_reported(self,data,column):
         datos = data.dropna(subset=[column])
@@ -199,7 +224,10 @@ class Logica:
         for column in list_columnas:
 
             # Sustituir los valores no válidos por 0
-            df[column] = df[column].apply(lambda x: 0 if (not isinstance(x, int) and not isinstance(x, float)) or x < 0 else x)
+            try:
+                df[column] = df[column].apply(lambda x: 0 if (not isinstance(x, int) and not isinstance(x, float)) or x < 0 else x)
+            except:
+                pass
         return df
 
     def verifica_repeticion_columnas_en_fila(self,df,col1,col2):
