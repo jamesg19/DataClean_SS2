@@ -21,7 +21,7 @@ class File:
             return datos
         except HTTPError as e:
             print(f'Error HTTP al intentar acceder a la URL: {e}')
-
+            return datos
         except URLError as e:
             print(f'Error de URL: {e}')
             datos=""
