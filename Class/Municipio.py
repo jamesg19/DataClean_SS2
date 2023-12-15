@@ -9,6 +9,6 @@ class Municipio:
         self.poblacion = poblacion
         self.fechas = fechas
 
-    def mostrar_informacion(self):
-
-        print(f"Departamento: {self.departamento}, Codigo_departamento {self.codigo_departamento}, municipio: {self.municipio}, codigo_municipio{self.codigo_municipio}, Poblacion: {self.poblacion}, \nFechas: {self.fechas})\n")
+    # def mostrar_informacion(self):
+    #
+    #     print(f"Departamento: {self.departamento}, Codigo_departamento {self.codigo_departamento}, municipio: {self.municipio}, codigo_municipio{self.codigo_municipio}, Poblacion: {self.poblacion}, \nFechas: {self.fechas})\n")

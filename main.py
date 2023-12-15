@@ -13,8 +13,7 @@ if __name__ == '__main__':
     # Registra el tiempo de inicio
     tiempo_inicio = time.time()
 
-    dataBase=DB()
-    dataBase.conectar()
+
     logica=Logica()
     logica.analizar()
 

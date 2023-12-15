@@ -7,9 +7,9 @@ class Global:
         self.new_deaths = new_deaths
         self.cumulative_deaths = cumulative_deaths
 
-    def mostrar_informacion(self):
-        print(f"Fecha Reportada: {self.date_reported} "
-              f"País: {self.country} "
-              f"Nuevas Muertes: {self.new_deaths} "
-              f"Muertes Acumuladas: {self.cumulative_deaths} "
-              "\n")
+    # def mostrar_informacion(self):
+    #     print(f"Fecha Reportada: {self.date_reported} "
+    #           f"País: {self.country} "
+    #           f"Nuevas Muertes: {self.new_deaths} "
+    #           f"Muertes Acumuladas: {self.cumulative_deaths} "
+    #           "\n")
