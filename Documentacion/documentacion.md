@@ -34,13 +34,18 @@
 - Se elimina la fila si tiene un campo vacío.
 
 ## Archivo Local:
-
+### Fechas:
+- verifica que tenga fechas en formato valido %m/%d/%Y
+- verifica que NO tenga fechas en blanco de lo contrario elimina el registro la columna completa
+- verifica que sea una fecha segun el rango especificado
 ### Departamento:
-
+- verifica que contenga solo string de lo contrario elimina el registro
 ### Codigo_departamento:
-
+- verifica que contenga solo numeros de lo contrario elimina el registro
 ### Municipio:
-
+- verifica que contenga solo string de lo contrario elimina el registro
 ### Codigo_municipio:
+- verifica que contenga solo string de lo contrario elimina el registro
 
 ### Poblacion:
+- verifica que contenga solo numeros enteros positivos

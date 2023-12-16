@@ -21,8 +21,10 @@ class Logica:
         year=2021
         cantidad_bloque=50
         nombre_archivo_local="municipio.csv"
+        print("Limpieza de datos Global:")
+        lista_combinada_global=self.procesar_arhcivo_global("global.csv",pais,year)
 
-        lista_combinada_global=self.procesar_arhcivo_global(url,pais,year)
+        print("Limpieza de datos Local:")
         lista_combinada_local=self.procesar_arhcivo_local(nombre_archivo_local,year)
 
         merge=MergeData(lista_combinada_local,lista_combinada_global)
@@ -34,20 +36,26 @@ class Logica:
         file = File(url)
         datos = file.download_csv()
         # filtrar por pais
+        print("-Filtra por pais")
         datos_filtrados = file.filtar_country_global(datos, pais)
         #print(datos_filtrados.head())
         # verificar que sean enteros en numero de muertes diarias
+        print("-Verifica numeros entero positivos y espacios en blanco o vacios")
         datos_filtrados = self.verificar_entero(datos_filtrados, 'New_deaths')
         # verificar que sean enteros en numero acumulado de muertes
+        print("-Verifica numeros entero positivos")
         datos_filtrados = self.verificar_entero(datos_filtrados, 'Cumulative_deaths')
         #print(datos_filtrados.shape[0])
         #Verificar fechas duplicadas
+        print("-Verifica fechas en formato valido y las elimina")
         datos_filtrados =self.eliminar_fecha_duplicada(datos_filtrados,'Date_reported')
         # verificar formato de fecha
+        print("-Verifica fechas duplicadas")
         datos_filtrados = self.verificar_fecha(datos_filtrados,year,'Date_reported')
         #print(datos_filtrados.shape[0])
         #print(datos_filtrados.head())
         #verificar que la fecha y pais no se repita en una misma fila
+        print("-Verifica columnas repetidas y filas")
         datos_filtrados=self.verifica_repeticion_columnas_en_fila(datos_filtrados,'Date_reported','Country')
 
         lst_global=self.convertir_global_a_object(datos_filtrados)
@@ -59,25 +67,29 @@ class Logica:
     def procesar_arhcivo_local(self,name,year):
         file = File(name)
         data_local=file.download_csv()
-        #print("#################")
-        #print(data_local.shape[0])
-        #print(len(data_local))
-        #print(data_local.head())
-        #print("######################\n")
+
+        print("Verifica fechas validas")
         data_local,columnas_validas_fecha=self.get_lista_fechas_local(data_local)
 
+        print("-Filtra las fechas por el parametro solicitado")
         data_local=self.filtrar_columnas_por_fecha(data_local,year,columnas_validas_fecha)
 
+        print("-Verifica numeros enteros en casos reportados")
         data_local=self.verificar_entero_archivo_local(data_local,columnas_validas_fecha)
 
+        print("-Verifica numeros enteros en la poblacion")
         data_local=self.verificar_poblacion(data_local,"poblacion")
 
+        print("-Verifica que vengan solo string en departamento")
         data_local=self.analizar_solo_string(data_local,"departamento")
 
+        print("-Verifica que vengan solo string en municipio")
         data_local = self.analizar_solo_string(data_local, "municipio")
 
+        print("-Verifica repeticion de columnas")
         data_local = self.verifica_repeticion_columnas_en_fila(data_local,"departamento","municipio")
 
+        print("-verifica espacios en blanco")
         lst_local_por_fecha=self.sumar_columnas_por_fecha(data_local,columnas_validas_fecha)
 
         #lst=self.convertir_local_a_object(data_local)
