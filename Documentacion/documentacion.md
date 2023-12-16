@@ -86,4 +86,8 @@
 - Clave externa que se relaciona con el identificador único de la tabla 'informe'.
 - Asegura la integridad referencial entre las tablas.
 
+### EJECUCION
+- python main.py "https://seminario2.blob.core.windows.net/fase1/global.csv?sp=r&st=2023-12-06T03:45:26Z&se=2024-01-04T11:45:2
+6Z&sv=2022-11-02&sr=b&sig=xdx7LdUOekGyBvGL%2FNE55ZZj9SBvCC%2FWegxtpSsKjJg%3D" Guatemala 2021 50
 
+- PARAMETOS URL, PAIS, AÑO, CANTIDAD

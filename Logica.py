@@ -15,11 +15,12 @@ class Logica:
     def __init__(self):
         pass
 
-    def analizar(self):
-        url = "https://seminario2.blob.core.windows.net/fase1/global.csv?sp=r&st=2023-12-06T03:45:26Z&se=2024-01-04T11:45:26Z&sv=2022-11-02&sr=b&sig=xdx7LdUOekGyBvGL%2FNE55ZZj9SBvCC%2FWegxtpSsKjJg%3D"
-        pais = "Guatemala"
-        year=2021
-        cantidad_bloque=50
+    def analizar(self,urll,paiss,yearr,cantidad):
+        #url = "https://seminario2.blob.core.windows.net/fase1/global.csv?sp=r&st=2023-12-06T03:45:26Z&se=2024-01-04T11:45:26Z&sv=2022-11-02&sr=b&sig=xdx7LdUOekGyBvGL%2FNE55ZZj9SBvCC%2FWegxtpSsKjJg%3D"
+        url=urll
+        pais = paiss
+        year=yearr
+        cantidad_bloque=cantidad
         nombre_archivo_local="municipio.csv"
         print("Limpieza de datos Global:")
         lista_combinada_global=self.procesar_arhcivo_global(url,pais,year)
@@ -74,8 +75,8 @@ class Logica:
         data_local,columnas_validas_fecha=self.get_lista_fechas_local(data_local)
 
         print("-Filtra las fechas por el parametro solicitado")
-        data_local=self.filtrar_columnas_por_fecha(data_local,year,columnas_validas_fecha)
-
+        data_local,columnas_validas_fecha=self.filtrar_columnas_por_fecha(data_local,year,columnas_validas_fecha)
+        #print(columnas_validas_fecha)
         print("-Verifica numeros enteros en casos reportados")
         data_local=self.verificar_entero_archivo_local(data_local,columnas_validas_fecha)
 
@@ -91,7 +92,10 @@ class Logica:
         print("-Verifica repeticion de columnas")
         data_local = self.verifica_repeticion_columnas_en_fila(data_local,"departamento","municipio")
 
+        #DEBUG
+        data_local.to_csv('james.csv', index=False)
         print("-verifica espacios en blanco")
+
         lst_local_por_fecha=self.sumar_columnas_por_fecha(data_local,columnas_validas_fecha)
 
         #lst=self.convertir_local_a_object(data_local)
@@ -122,8 +126,8 @@ class Logica:
                 print(f"Fecha no válida: {fecha_str}")
 
                 #df = df.drop(df.columns[5+indice], axis=1)
-                df = df.drop(fecha_str, axis=1)
-                print(f"Columna {fecha_str} eliminada.")
+                df = df.drop(str(fecha_str), axis=1)
+                print(f"Columna {str(fecha_str)} eliminada.")
 
 
         # Imprime las fechas válidas
@@ -142,19 +146,17 @@ class Logica:
         for item in columnas_validas_fecha:
 
             fecha_parseada = pd.to_datetime(item, format='%m/%d/%Y')
-            lista.append([fecha_parseada,item])
+            #lista.append([fecha_parseada,item])
 
-        # Filtra las columnas que corresponden al año X
-        #columnas_fechas_filtradas = [str(fecha) for fecha in fechas_parseadas if fecha.year == year]
+            if not int(fecha_parseada.year) == int(year):
+                # print("Elimina ",fechas_item[1])
+                df = df.drop(str(item), axis=1)
+                columnas_validas_fecha.remove(item)
 
-        for fechas_item in lista:
+            else:
+                lista.append( item)
 
-           if not fechas_item[0].year == year:
-
-               print(fechas_item[1])
-               df = df.drop(fechas_item[1], axis=1)
-
-        return df
+        return df,lista
 
 
         #return df_filtrado
@@ -291,7 +293,7 @@ class Logica:
             try:
                 df[column] = df[column].apply(lambda x: 0 if (not isinstance(x, int) and not isinstance(x, float)) or x < 0 else x)
             except:
-                pass
+                print("\033[91mError en verificar_entero_archivo_local.\033[0m")
         return df
 
     def verifica_repeticion_columnas_en_fila(self,df,col1,col2):
