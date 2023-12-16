@@ -22,7 +22,7 @@ class Logica:
         cantidad_bloque=50
         nombre_archivo_local="municipio.csv"
         print("Limpieza de datos Global:")
-        lista_combinada_global=self.procesar_arhcivo_global("global.csv",pais,year)
+        lista_combinada_global=self.procesar_arhcivo_global(url,pais,year)
 
         print("Limpieza de datos Local:")
         lista_combinada_local=self.procesar_arhcivo_local(nombre_archivo_local,year)
@@ -32,6 +32,8 @@ class Logica:
         gestor=GestorDB()
         id_informe_insertado=gestor.insertar_informe("Mi DataSet")
         gestor.insertar_informes_en_bloques(lst_merge,cantidad_bloque,pais,id_informe_insertado)
+
+
     def procesar_arhcivo_global(self,url,pais,year):
         file = File(url)
         datos = file.download_csv()
