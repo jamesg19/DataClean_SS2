@@ -49,3 +49,41 @@
 
 ### Poblacion:
 - verifica que contenga solo numeros enteros positivos
+
+# Estructura de la Tabla 'dataset' COMBINADO
+
+## Columnas:
+
+### id:
+- Identificador único para cada registro en la tabla.
+- su valor es unicamente enteros.
+
+### date_reported :
+- Almacena la fecha del informe.
+- esta agrupada para ambos informes.
+
+### country:
+- Almacena el nombre del país.
+- Tipo de dato VARCHAR con una longitud máxima de 50 caracteres.
+
+### muertes_local :
+- Número de muertes del conjunto de datos local.
+- Tipo de dato INT (entero).
+
+### muertes_global:
+- Número de muertes del conjunto de datos global.
+- Tipo de dato entero.
+
+### promedio :
+- Almacena el promedio de muertes, calculado a partir de los datos locales y globales.
+- Tipo de dato DOUBLE para permitir valores decimales.
+
+### tipo:
+- Almacena algún tipo de clasificación o información adicional sobre el registro.
+- Tipo de dato VARCHAR con una longitud máxima de 50 caracteres.
+
+### id_informe :
+- Clave externa que se relaciona con el identificador único de la tabla 'informe'.
+- Asegura la integridad referencial entre las tablas.
+
+
