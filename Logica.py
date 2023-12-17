@@ -1,3 +1,4 @@
+import math
 from datetime import datetime
 import pandas as pd
 
@@ -22,7 +23,7 @@ class Logica:
         year=yearr
         cantidad_bloque=cantidad
         nombre_archivo_local="municipio.csv"
-        print("Limpieza de datos Global:")
+        #print("Limpieza de datos Global:")
         lista_combinada_global=self.procesar_arhcivo_global(url,pais,year)
 
         print("Limpieza de datos Local:")
@@ -44,10 +45,10 @@ class Logica:
         #print(datos_filtrados.head())
         # verificar que sean enteros en numero de muertes diarias
         print("-Verifica numeros entero positivos y espacios en blanco o vacios")
-        datos_filtrados = self.verificar_entero(datos_filtrados, 'New_deaths')
+        datos_filtrados = self.verificar_entero(datos_filtrados, 'New_deaths',0,False,0,True,True)
         # verificar que sean enteros en numero acumulado de muertes
         print("-Verifica numeros entero positivos")
-        datos_filtrados = self.verificar_entero(datos_filtrados, 'Cumulative_deaths')
+        datos_filtrados = self.verificar_entero(datos_filtrados, 'Cumulative_deaths',0,False,0,True,True)
         #print(datos_filtrados.shape[0])
         #Verificar fechas duplicadas
         print("-Verifica fechas en formato valido y las elimina")
@@ -79,9 +80,16 @@ class Logica:
         #print(columnas_validas_fecha)
         print("-Verifica numeros enteros en casos reportados")
         data_local=self.verificar_entero_archivo_local(data_local,columnas_validas_fecha)
-
+        #data_local  =self.verificar_entero(data_local,"",0,False,0,False)
         print("-Verifica numeros enteros en la poblacion")
-        data_local=self.verificar_poblacion(data_local,"poblacion")
+        data_local=self.verificar_entero(data_local,"poblacion",0,False,0,True,True)
+
+        print("-Verifica numeros enteros en la codigo_departamento")
+        data_local = self.verificar_entero(data_local, "codigo_departamento", 0, False, 0, True, True)
+
+        print("-Verifica numeros enteros en la codigo_municipio")
+        data_local = self.verificar_entero(data_local, "codigo_municipio", 0, False, 0, True, True)
+
 
         print("-Verifica que vengan solo string en departamento")
         data_local=self.analizar_solo_string(data_local,"departamento")
@@ -240,13 +248,47 @@ class Logica:
 
         return municipios
 
+
+
+
+
     #Verifica si la la columna especificada contiene datos enteros
     #si hay un dato que NO sea un entero se elimina la fila
-    def verificar_entero(self, datos,column):
-        # Convertir la columna 'New_cases' a numérico y eliminar filas con valores no numéricos
-        datos.loc[:, column] = pd.to_numeric(datos[column], errors='coerce')
-        datos = datos.dropna(subset=[column])  # Eliminar filas con valores no numéricos
+    def verificar_entero(self, datos, column, sustituto, aproximarBool, cantDecimales, borrar,BorrarFila):
+        # Convertir la columna 'X' a numérico y y susitituir por"sustituto"
+        # datos.loc[:, column] = pd.to_numeric(datos[column], errors='coerce').fillna(sustituto)
+        # .fillna(0)
+        if borrar:
+            datos.loc[:, column] = pd.to_numeric(datos[column], errors='coerce').dropna()
+        else:
+            datos.loc[:, column] = pd.to_numeric(datos[column], errors='coerce').fillna(sustituto)
+            # Sustituir valores negativos por "sustituto"
+            if aproximarBool:
+
+                datos[column] = datos[column].apply(lambda x: max(math.ceil(x), sustituto))
+            else:
+                datos[column] = datos[column].apply(lambda x: max(round(x, cantDecimales), sustituto))
+        if BorrarFila:
+            datos = datos.dropna(subset=[column], how='any', axis=0)  # Eliminar filas con valores no numéricos
+
         return datos
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     #Valida que una columna solo tenga string de lo contrario elimina la fila
     def analizar_solo_string(self,df,columna):
         df=self.eliminar_campo_vacio(df,columna)
@@ -288,10 +330,10 @@ class Logica:
 
         #print("*** COLUMNAS VALIDAS: ",list_columnas)
         for column in list_columnas:
-
             # Sustituir los valores no válidos por 0
             try:
-                df[column] = df[column].apply(lambda x: 0 if (not isinstance(x, int) and not isinstance(x, float)) or x < 0 else x)
+                #df[column] = df[column].apply(lambda x: 0 if (not isinstance(x, int) and not isinstance(x, float)) or x < 0 else x)
+                df = self.verificar_entero(df, column, 0, False, 0, False,False)
             except:
                 print("\033[91mError en verificar_entero_archivo_local.\033[0m")
         return df
